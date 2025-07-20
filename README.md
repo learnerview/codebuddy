@@ -16,7 +16,7 @@ CodeBuddy is a JavaFX-based desktop app for tracking competitive programming pro
 ## 🛠️ How I Built It (with AI Help)
 I started this project to organize my competitive programming journey. With the help of an AI assistant, I:
 - Designed the UI in FXML and JavaFX.
-- Implemented the backend using Java, SQLite, and Maven.
+- Implemented the backend using Java, MySQL, and Maven.
 - Added analytics and charts for motivation.
 - Debugged tricky UI and data-binding issues.
 - Made the app accessible and visually appealing.
@@ -24,7 +24,7 @@ I started this project to organize my competitive programming journey. With the 
 ## 📦 Tech Stack
 - **Java 17**
 - **JavaFX 21** (UI)
-- **SQLite** (local database)
+- **MySQL** (local database)
 - **Maven** (build & dependency management)
 - **JUnit 5** (testing)
 
