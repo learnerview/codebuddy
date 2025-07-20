@@ -1,0 +1,63 @@
+/* Dark Mode Stylesheet */
+.root {
+    -fx-background-color: #181818 !important;
+    -fx-text-fill: #fff !important;
+}
+.label, .text, .table-cell, .table-row-cell, .list-cell {
+    -fx-text-fill: #fff !important;
+}
+.button, .menu-button, .combo-box, .text-field, .table-view, .list-view {
+    -fx-background-color: #222 !important;
+    -fx-text-fill: #fff !important;
+    -fx-border-color: #444 !important;
+}
+.button:focused, .text-field:focused, .combo-box:focused, .list-view:focused, .table-view:focused {
+    -fx-border-color: #00bfff !important;
+    -fx-border-width: 2px;
+}
+.table-view .column-header-background {
+    -fx-background-color: #222 !important;
+}
+.table-row-cell:selected, .table-cell:selected {
+    -fx-background-color: #005fa3 !important;
+    -fx-text-fill: #fff !important;
+}
+.menu-bar, .menu {
+    -fx-background-color: #222 !important;
+    -fx-text-fill: #fff !important;
+}
+.scroll-pane, .scroll-bar {
+    -fx-background-color: #181818 !important;
+}
+.scroll-bar, .scroll-bar .thumb {
+    -fx-background-color: #444 !important;
+    -fx-border-color: #181818 !important;
+}
+/* Charts */
+.chart, .pie-chart, .bar-chart, .line-chart {
+    -fx-background-color: #181818 !important;
+    -fx-text-fill: #fff !important;
+    -fx-border-color: #444 !important;
+}
+.axis, .axis-label, .tick-label {
+    -fx-tick-label-fill: #fff !important;
+    -fx-text-fill: #fff !important;
+    -fx-stroke: #fff !important;
+}
+.chart-legend, .legend {
+    -fx-background-color: #222 !important;
+    -fx-text-fill: #fff !important;
+    -fx-border-color: #444 !important;
+}
+.chart-series-line, .chart-bar, .chart-pie {
+    -fx-stroke: #00bfff !important;
+    -fx-fill: #fff !important;
+}
+.chart-plot-background {
+    -fx-background-color: #222 !important;
+}
+/* Overlay/Spinner */
+.progress-indicator, .progress-bar {
+    -fx-background-color: #181818 !important;
+    -fx-progress-color: #00bfff !important;
+} 

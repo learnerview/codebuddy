@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.codebuddy.gui.MainViewController"
+           stylesheets="/fxml/style.css">
+    <top>
+        <VBox spacing="4" style="-fx-padding: 16;">
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <Label fx:id="progressLabel" text="Problems solved today: 0" />
+                <Label fx:id="streakLabel" text="Current streak: 0 days" />
+                <Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="toggleDarkModeButton" text="Enable Dark Mode" onAction="#handleToggleDarkMode" accessibleText="Toggle dark or light mode" focusTraversable="true">
+                    <tooltip>
+                        <Tooltip text="Toggle dark/light mode" />
+                    </tooltip>
+                </Button>
+                <Button fx:id="highContrastButton" text="Enable High Contrast" accessibleText="Toggle high contrast mode for accessibility" focusTraversable="true" />
+                <Label fx:id="loggedInUserLabel" text="" style="-fx-font-weight: bold; -fx-padding: 0 8 0 16;" />
+                <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout" styleClass="danger-button" accessibleText="Log out and return to login page" focusTraversable="true">
+                    <tooltip>
+                        <Tooltip text="Log out and return to login page" />
+                    </tooltip>
+                </Button>
+            </HBox>
+            <MenuBar>
+                <menus>
+                    <Menu text="File">
+                        <MenuItem text="Add Problem" fx:id="addProblemMenuItem" onAction="#handleAddProblem" />
+                        <MenuItem text="Export to CSV" fx:id="exportCsvMenuItem" onAction="#handleExportCsv" />
+                        <MenuItem text="Export to JSON" fx:id="exportJsonMenuItem" onAction="#handleExportJson" />
+                        <MenuItem text="Import from CSV" fx:id="importCsvMenuItem" onAction="#handleImportCsv" />
+                        <MenuItem text="Import from JSON" fx:id="importJsonMenuItem" onAction="#handleImportJson" />
+                        <MenuItem text="Exit" fx:id="exitMenuItem" />
+                    </Menu>
+                    <Menu text="Reload">
+                        <MenuItem text="Reload from Database" fx:id="reloadMenuItem" />
+                    </Menu>
+                    <Menu text="Analytics">
+                        <MenuItem text="Show Analytics" fx:id="analyticsMenuItem" onAction="#handleAnalytics" />
+                    </Menu>
+                    <Menu text="Help">
+                        <MenuItem text="Keyboard Shortcuts" fx:id="keyboardShortcutsMenuItem" />
+                        <MenuItem text="Send Feedback" fx:id="sendFeedbackMenuItem" />
+                    </Menu>
+                </menus>
+            </MenuBar>
+        </VBox>
+    </top>
+    <left>
+        <VBox spacing="14" style="-fx-padding: 18;">
+            <Label text="Filter by Platform:" />
+            <ListView fx:id="platformListView" prefHeight="100" />
+            <Label text="Filter by Difficulty:" />
+            <ListView fx:id="difficultyListView" prefHeight="100" />
+            <Button fx:id="clearFiltersButton" text="Clear Filters" onAction="#handleClearFilters" accessibleText="Clear all filters" focusTraversable="true">
+                <tooltip>
+                    <Tooltip text="Clear all filters" />
+                </tooltip>
+            </Button>
+        </VBox>
+    </left>
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <content>
+                <VBox spacing="12" style="-fx-padding: 16;" VBox.vgrow="ALWAYS">
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="searchField" promptText="Search by name or platform..." />
+                        <Button fx:id="searchButton" text="Search" onAction="#handleSearch" accessibleText="Search problems" focusTraversable="true">
+                            <tooltip>
+                                <Tooltip text="Search problems" />
+                            </tooltip>
+                        </Button>
+                        <Button fx:id="addProblemButton" text="Add Problem" onAction="#handleAddProblem" styleClass="primary-button" accessibleText="Add a new problem" focusTraversable="true">
+                            <tooltip>
+                                <Tooltip text="Add a new problem" />
+                            </tooltip>
+                        </Button>
+                    </HBox>
+                    <TableView fx:id="problemTable" VBox.vgrow="ALWAYS" fixedCellSize="32" focusTraversable="true">
+                        <columns>
+                            <TableColumn fx:id="nameColumn" text="Name" minWidth="120" />
+                            <TableColumn fx:id="platformColumn" text="Platform" minWidth="100" />
+                            <TableColumn fx:id="difficultyColumn" text="Difficulty" minWidth="90" />
+                            <TableColumn fx:id="timeColumn" text="Time (min)" minWidth="80" />
+                            <TableColumn fx:id="dateColumn" text="Date &amp; Time" minWidth="160" />
+                            <TableColumn fx:id="notesColumn" text="Notes" minWidth="120" />
+                            <TableColumn fx:id="linkColumn" text="Link" minWidth="120" />
+                            <TableColumn fx:id="actionsColumn" text="Actions" minWidth="80" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <VBox>
+            <HBox fx:id="snackbar" alignment="CENTER" spacing="10" style="-fx-background-color: #323232; -fx-padding: 10; -fx-background-radius: 8; -fx-opacity: 0; -fx-translate-y: 40;" visible="false" managed="false">
+                <Label fx:id="snackbarLabel" text="" style="-fx-text-fill: white; -fx-font-size: 14;" />
+                <Button fx:id="snackbarActionBtn" text="" visible="false" managed="false" />
+            </HBox>
+            <HBox style="-fx-padding: 5;" alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="statusLabel" text="Ready" />
+                <Button fx:id="undoButton" text="Undo" accessibleText="Undo last action" focusTraversable="true" />
+                <Button fx:id="redoButton" text="Redo" accessibleText="Redo last undone action" focusTraversable="true" />
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane> 

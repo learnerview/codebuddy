@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.codebuddy.gui.AnalyticsViewController"
+           stylesheets="/fxml/style.css">
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+            <Button fx:id="closeButton" text="Close" />
+            <Label fx:id="streakLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label fx:id="totalSolvedLabel" text="" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button fx:id="refreshButton" text="Refresh" />
+        </HBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <content>
+                <VBox spacing="20" style="-fx-padding: 20;" alignment="TOP_CENTER">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Recent Activity" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                        <Label text="Rows to show:" />
+                        <ComboBox fx:id="recentRowsCombo" prefWidth="60" />
+                    </HBox>
+                    <TableView fx:id="recentProblemsTable" minHeight="40" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="nameColumn" text="Name" />
+                            <TableColumn fx:id="platformColumn" text="Platform" />
+                            <TableColumn fx:id="difficultyColumn" text="Difficulty" />
+                            <TableColumn fx:id="dateColumn" text="Date" />
+                            <TableColumn fx:id="timeColumn" text="Time Taken (min)" />
+                            <TableColumn fx:id="notesColumn" text="Notes" />
+                            <TableColumn fx:id="linkColumn" text="Link" />
+                        </columns>
+                    </TableView>
+                    <HBox spacing="40" alignment="CENTER">
+                        <PieChart fx:id="platformPieChart" title="Problems by Platform" prefWidth="350" prefHeight="300" />
+                        <PieChart fx:id="difficultyPieChart" title="Problems by Difficulty" prefWidth="350" prefHeight="300" />
+                    </HBox>
+                    <BarChart fx:id="problemsPerMonthChart" title="Problems Solved Per Month" prefWidth="700" prefHeight="300">
+                        <xAxis>
+                            <CategoryAxis label="Month" />
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Problems Solved" />
+                        </yAxis>
+                    </BarChart>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane> 

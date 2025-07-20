@@ -1,0 +1,66 @@
+/* High Contrast Accessibility Stylesheet */
+.root {
+    -fx-background-color: #000 !important;
+    -fx-text-fill: #fff !important;
+}
+.label, .text, .table-cell, .table-row-cell, .list-cell {
+    -fx-text-fill: #fff !important;
+    -fx-font-weight: bold;
+}
+.button, .menu-button, .combo-box, .text-field, .table-view, .list-view {
+    -fx-background-color: #000 !important;
+    -fx-text-fill: #fff !important;
+    -fx-border-color: #fff !important;
+    -fx-border-width: 2px;
+}
+.button:focused, .text-field:focused, .combo-box:focused, .list-view:focused, .table-view:focused {
+    -fx-border-color: yellow !important;
+    -fx-border-width: 3px;
+    -fx-effect: dropshadow(gaussian, yellow, 8, 0.5, 0, 0);
+}
+.table-view .column-header-background {
+    -fx-background-color: #222 !important;
+}
+.table-row-cell:selected, .table-cell:selected {
+    -fx-background-color: yellow !important;
+    -fx-text-fill: #000 !important;
+}
+.menu-bar, .menu {
+    -fx-background-color: #111 !important;
+    -fx-text-fill: #fff !important;
+}
+.scroll-pane, .scroll-bar {
+    -fx-background-color: #000 !important;
+}
+.scroll-bar, .scroll-bar .thumb {
+    -fx-background-color: #fff !important;
+    -fx-border-color: #000 !important;
+}
+/* Charts */
+.chart, .pie-chart, .bar-chart, .line-chart {
+    -fx-background-color: #000 !important;
+    -fx-text-fill: #fff !important;
+    -fx-border-color: #fff !important;
+}
+.axis, .axis-label, .tick-label {
+    -fx-tick-label-fill: yellow !important;
+    -fx-text-fill: yellow !important;
+    -fx-stroke: yellow !important;
+}
+.chart-legend, .legend {
+    -fx-background-color: #111 !important;
+    -fx-text-fill: #fff !important;
+    -fx-border-color: #fff !important;
+}
+.chart-series-line, .chart-bar, .chart-pie {
+    -fx-stroke: yellow !important;
+    -fx-fill: #fff !important;
+}
+.chart-plot-background {
+    -fx-background-color: #111 !important;
+}
+/* Overlay/Spinner */
+.progress-indicator, .progress-bar {
+    -fx-background-color: #000 !important;
+    -fx-progress-color: yellow !important;
+} 

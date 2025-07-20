@@ -1,0 +1,65 @@
+:root {
+    /* Light theme colors */
+    --background: #f7f7f7;
+    --foreground: #222;
+    --accent: #1976d2;
+    --table-header: #e3e3e3;
+    --table-row: #fff;
+    --table-row-alt: #f0f0f0;
+    --border: #cccccc;
+    --button-hover: #1565c0;
+}
+
+.root {
+    -fx-background-color: var(--background);
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
+    -fx-font-size: 14px;
+    -fx-border-color: var(--border);
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 16px;
+}
+
+.label, .menu-bar, .table-view, .list-view {
+    -fx-text-fill: var(--foreground);
+}
+
+.menu-bar {
+    -fx-background-color: var(--table-header);
+    -fx-border-radius: 8px 8px 0 0;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.table-view {
+    -fx-background-color: var(--table-row);
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: var(--table-header);
+}
+
+.table-row-cell:odd {
+    -fx-background-color: var(--table-row-alt);
+}
+
+.table-row-cell:even {
+    -fx-background-color: var(--table-row);
+}
+
+.button, .menu-item {
+    -fx-background-color: var(--accent);
+    -fx-text-fill: #fff;
+    -fx-background-radius: 4px;
+    -fx-border-color: var(--border);
+    -fx-border-width: 1px;
+    -fx-padding: 8px 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+.button:hover {
+    -fx-background-color: var(--button-hover);
+    -fx-text-fill: #fff;
+} 
