@@ -480,6 +480,7 @@ public class MainViewController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File file = fileChooser.showSaveDialog(problemTable.getScene().getWindow());
         if (file == null) return;
+        
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("Name,Platform,Difficulty,TimeTaken,Date,Notes,Link\n");
             for (Problem p : filteredList) {
@@ -488,11 +489,12 @@ public class MainViewController {
                         escapeCsv(p.getPlatform().name()),
                         escapeCsv(p.getDifficulty().name()),
                         p.getTimeTakenMin(),
-                        p.getSolvedDate(),
+                        p.getSolvedDate().format(DATE_TIME_FORMATTER),
                         escapeCsv(p.getNotes()),
                         escapeCsv(p.getLink())
                 ));
             }
+            showSnackbar("Exported to " + file.getAbsolutePath());
             statusLabel.setText("Exported to " + file.getAbsolutePath());
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -502,6 +504,7 @@ public class MainViewController {
             alert.showAndWait();
         }
     }
+
     @FXML
     private void handleImportCsv() {
         FileChooser fileChooser = new FileChooser();
@@ -509,26 +512,33 @@ public class MainViewController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File file = fileChooser.showOpenDialog(problemTable.getScene().getWindow());
         if (file == null) return;
+        
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line = reader.readLine(); // skip header
             int imported = 0;
             while ((line = reader.readLine()) != null) {
                 String[] parts = parseCsvLine(line);
                 if (parts.length < 7) continue;
-                Problem p = new Problem(0,
-                        parts[0],
-                        org.codebuddy.core.models.Platform.valueOf(parts[1]),
-                        Difficulty.valueOf(parts[2]),
-                        Integer.parseInt(parts[3]),
-                        LocalDateTime.parse(parts[4]),
-                        parts[5],
-                        parts[6],
-                        loggedInUser.getId()
-                );
-                problemService.addProblem(p);
-                imported++;
+                
+                try {
+                    Problem p = new Problem(0,
+                            parts[0],
+                            org.codebuddy.core.models.Platform.valueOf(parts[1].toUpperCase()),
+                            Difficulty.valueOf(parts[2].toUpperCase()),
+                            Integer.parseInt(parts[3]),
+                            LocalDateTime.parse(parts[4], DATE_TIME_FORMATTER),
+                            parts[5],
+                            parts[6],
+                            loggedInUser.getId()
+                    );
+                    problemService.addProblem(p);
+                    imported++;
+                } catch (Exception e) {
+                    System.err.println("Failed to import line: " + line + " - " + e.getMessage());
+                }
             }
             loadProblemsForUser();
+            showSnackbar("Imported " + imported + " problems from CSV");
             statusLabel.setText("Imported " + imported + " problems from CSV");
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -781,12 +791,13 @@ public class MainViewController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
         File file = fileChooser.showSaveDialog(problemTable.getScene().getWindow());
         if (file == null) return;
+        
         try {
             ObjectMapper mapper = new ObjectMapper();
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
-            // Export only filtered problems
             mapper.writeValue(file, filteredList);
             showSnackbar("Exported to " + file.getAbsolutePath());
+            statusLabel.setText("Exported to " + file.getAbsolutePath());
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
@@ -803,17 +814,25 @@ public class MainViewController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("JSON Files", "*.json"));
         File file = fileChooser.showOpenDialog(problemTable.getScene().getWindow());
         if (file == null) return;
+        
         try {
             ObjectMapper mapper = new ObjectMapper();
             int imported = 0;
-            // Read as List<Problem>
             java.util.List<Problem> problems = mapper.readValue(file, new TypeReference<java.util.List<Problem>>(){});
+            
             for (Problem p : problems) {
-                problemService.addProblem(p);
-                imported++;
+                try {
+                    // Ensure the problem belongs to the current user
+                    p.setUserId(loggedInUser.getId());
+                    problemService.addProblem(p);
+                    imported++;
+                } catch (Exception e) {
+                    System.err.println("Failed to import problem: " + p.getName() + " - " + e.getMessage());
+                }
             }
             loadProblemsForUser();
             showSnackbar("Imported " + imported + " problems from JSON");
+            statusLabel.setText("Imported " + imported + " problems from JSON");
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");

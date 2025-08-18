@@ -23,6 +23,13 @@ public class ProblemDao {
             stmt.setString(7, problem.getLink());
             stmt.setInt(8, problem.getUserId());
             stmt.executeUpdate();
+            
+            // Get the generated ID
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    problem.setId(rs.getInt(1));
+                }
+            }
         }
     }
 
@@ -52,7 +59,7 @@ public class ProblemDao {
     }
 
     public List<Problem> getAllProblems() throws SQLException {
-        String sql = "SELECT * FROM problems";
+        String sql = "SELECT * FROM problems ORDER BY solved_date DESC";
         List<Problem> problems = new ArrayList<>();
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -60,24 +67,14 @@ public class ProblemDao {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                problems.add(new Problem(
-                        rs.getInt("problem_id"),
-                        rs.getString("name"),
-                        Platform.valueOf(rs.getString("platform")),
-                        Difficulty.valueOf(rs.getString("difficulty")),
-                        rs.getInt("time_taken_min"),
-                        rs.getTimestamp("solved_date").toLocalDateTime(),
-                        rs.getString("notes"),
-                        rs.getString("link"),
-                        rs.getInt("user_id")
-                ));
+                problems.add(createProblemFromResultSet(rs));
             }
         }
         return problems;
     }
 
     public List<Problem> getAllProblemsForUser(int userId) throws SQLException {
-        String sql = "SELECT * FROM problems WHERE user_id = ?";
+        String sql = "SELECT * FROM problems WHERE user_id = ? ORDER BY solved_date DESC";
         List<Problem> problems = new ArrayList<>();
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -85,17 +82,7 @@ public class ProblemDao {
             stmt.setInt(1, userId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    problems.add(new Problem(
-                            rs.getInt("problem_id"),
-                            rs.getString("name"),
-                            Platform.valueOf(rs.getString("platform")),
-                            Difficulty.valueOf(rs.getString("difficulty")),
-                            rs.getInt("time_taken_min"),
-                            rs.getTimestamp("solved_date").toLocalDateTime(),
-                            rs.getString("notes"),
-                            rs.getString("link"),
-                            rs.getInt("user_id")
-                    ));
+                    problems.add(createProblemFromResultSet(rs));
                 }
             }
         }
@@ -103,7 +90,7 @@ public class ProblemDao {
     }
 
     public int getProblemsSolvedToday(int userId) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM problems WHERE user_id = ? AND solved_date = CURDATE()";
+        String sql = "SELECT COUNT(*) FROM problems WHERE user_id = ? AND DATE(solved_date) = CURDATE()";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
@@ -113,24 +100,87 @@ public class ProblemDao {
         }
         return 0;
     }
+
     public int getCurrentStreak(int userId) throws SQLException {
-        String sql = "SELECT solved_date FROM problems WHERE user_id = ? GROUP BY solved_date ORDER BY solved_date DESC";
+        String sql = "SELECT DISTINCT DATE(solved_date) as solved_date FROM problems " +
+                    "WHERE user_id = ? ORDER BY solved_date DESC";
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             try (ResultSet rs = stmt.executeQuery()) {
                 int streak = 0;
                 java.time.LocalDate today = java.time.LocalDate.now();
+                java.time.LocalDate currentDate = today;
+                
                 while (rs.next()) {
-                    java.time.LocalDate date = rs.getDate(1).toLocalDate();
-                    if (date.equals(today.minusDays(streak))) {
+                    java.time.LocalDate date = rs.getDate("solved_date").toLocalDate();
+                    if (date.equals(currentDate)) {
                         streak++;
+                        currentDate = currentDate.minusDays(1);
                     } else {
                         break;
                     }
                 }
                 return streak;
             }
+        }
+    }
+
+    private Problem createProblemFromResultSet(ResultSet rs) throws SQLException {
+        try {
+            return new Problem(
+                rs.getInt("problem_id"),
+                rs.getString("name"),
+                Platform.valueOf(rs.getString("platform")),
+                Difficulty.valueOf(rs.getString("difficulty")),
+                rs.getInt("time_taken_min"),
+                rs.getTimestamp("solved_date").toLocalDateTime(),
+                rs.getString("notes"),
+                rs.getString("link"),
+                rs.getInt("user_id")
+            );
+        } catch (IllegalArgumentException e) {
+            // Handle legacy data with old format
+            String platformStr = rs.getString("platform");
+            String difficultyStr = rs.getString("difficulty");
+            
+            Platform platform = mapLegacyPlatform(platformStr);
+            Difficulty difficulty = mapLegacyDifficulty(difficultyStr);
+            
+            return new Problem(
+                rs.getInt("problem_id"),
+                rs.getString("name"),
+                platform,
+                difficulty,
+                rs.getInt("time_taken_min"),
+                rs.getTimestamp("solved_date").toLocalDateTime(),
+                rs.getString("notes"),
+                rs.getString("link"),
+                rs.getInt("user_id")
+            );
+        }
+    }
+
+    private Platform mapLegacyPlatform(String platformStr) {
+        if (platformStr == null) return Platform.OTHER;
+        
+        switch (platformStr.toLowerCase()) {
+            case "leetcode": return Platform.LEETCODE;
+            case "codeforces": return Platform.CODEFORCES;
+            case "codechef": return Platform.CODECHEF;
+            case "hackerrank": return Platform.HACKERRANK;
+            default: return Platform.OTHER;
+        }
+    }
+
+    private Difficulty mapLegacyDifficulty(String difficultyStr) {
+        if (difficultyStr == null) return Difficulty.MEDIUM;
+        
+        switch (difficultyStr.toLowerCase()) {
+            case "easy": return Difficulty.EASY;
+            case "medium": return Difficulty.MEDIUM;
+            case "hard": return Difficulty.HARD;
+            default: return Difficulty.MEDIUM;
         }
     }
 }
